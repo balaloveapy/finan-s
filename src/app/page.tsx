@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./redux/redux";
 import { setAfazer } from "./redux/reduxtypes";
-import { green, red } from "@mui/material/colors";
+
 type over = {
   data: string,
   categoria: string,
@@ -22,23 +22,22 @@ export default function Home() {
   var { handleSubmit, register, reset } = useForm<over>()
   const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
   const [date, setDate] = useState<Date>(new Date)
-  const [valueUp,setValueUp]= useState(0)
-  const [valueDown,setValueDown]= useState(0)
+  const [valueUp, setValueUp] = useState(0)
+  const [valueDown, setValueDown] = useState(0)
   const [valornew, setValornew] = useState<over[]>()
-  useEffect(()=>{
-  var lucro = 0
-  var perda = 0
-  const ganho = user.map((a)=>{
-      if(a.categoria === 'Salario'){
-       lucro +=(+a.valor) 
+  useEffect(() => {
+    var lucro = 0
+    var perda = 0
+    const ganho = user.map((a) => {
+      if (a.categoria === 'Salario') {
+        lucro += (+a.valor)
       }
-      else{
-        perda +=(+a.valor)
+      else {
+        perda += (+a.valor)
       }
-    setValueUp(lucro)
-    setValueDown(perda)
-    console.log('oi')
-    },[user])
+      setValueUp(lucro)
+      setValueDown(perda)
+    }, [user])
   })
   useEffect(() => {
     var dates = (date.getFullYear()) + '-' + (1 + date.getMonth())
@@ -84,7 +83,7 @@ export default function Home() {
           </div>
           <div className="Balanço">
             <span>Balanço</span>
-            <p style={valueUp-valueDown<0?{color:'red'}:{color:'green'}}>{(valueUp-valueDown).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+            <p style={valueUp - valueDown < 0 ? { color: 'red' } : { color: 'green' }}>{(valueUp - valueDown).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
           </div>
         </div>
         <div className="categoria">
@@ -130,21 +129,21 @@ export default function Home() {
           <div className="biquine">
             <div className="text">
               Data
-              <div>{valornew?.map((a,b) =>
+              <div>{valornew?.map((a, b) =>
                 <div className="margin" key={b}>
                   {a.data}
                 </div>
               )}</div>
             </div>
             <div>Categoria
-            {valornew?.map((a,b) =>
-                <div className="margin" style={a.categoria==='Salario'?{background:'#3529db'}:{background:'#6a1a1e'}} key={b}>
+              {valornew?.map((a, b) =>
+                <div className="margin" style={a.categoria === 'Salario' ? { background: '#3529db' } : { background: '#6a1a1e' }} key={b}>
                   {a.categoria}
                 </div>
               )}
             </div>
             <div className="text">Titulo
-            {valornew?.map((a,b) =>
+              {valornew?.map((a, b) =>
                 <div className="margin" key={b}>
                   {a.titulo}
                 </div>
@@ -152,11 +151,11 @@ export default function Home() {
             </div>
           </div>
           <div className="text">Valor
-          {valornew?.map((a,b) =>
-                <div className="margin" key={b}>
-                  {(+a.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                </div>
-              )}
+            {valornew?.map((a, b) =>
+              <div className="margin" key={b}>
+                {(+a.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              </div>
+            )}
           </div>
         </div>
       </div>

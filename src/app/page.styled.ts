@@ -6,7 +6,28 @@ width: 100%;
         display: flex;
         flex-direction: column;
         gap: 50px;
-        max-width: 1000px;
+        max-width: 900px;
+        @media screen and (max-width:1000px) {
+            max-width: 500px;
+            width: 100%;
+            font-size: 10px;
+            label{
+                width: 100%;
+            }
+            div{
+                width: 100%;
+            }
+        }
+        @media screen and (max-width:500px) {
+            max-width: 300px;
+            .mes{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            }
+        }
         margin: 0 auto;
         width: inherit;
         .logo{
@@ -23,6 +44,7 @@ width: 100%;
             display: flex;
             gap: 25px;
             align-items: center;
+            justify-content: center;
         }
         background-color: #fff;
         font-weight: bold;
@@ -39,6 +61,7 @@ width: 100%;
     }
     .categoria{
         flex: 1;
+        display: flex;
         border-radius: 10px;
         background-color: #fff;
         form{
@@ -47,10 +70,16 @@ width: 100%;
             padding: 25px 40px 30px 20px;
             box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
             border-radius: 15px;
+            @media screen and (max-width:1000px) {
+                width: 100%;
+                flex-direction: column;
+            }
             display: flex;
+            
             justify-content: space-between;
             align-items: center;
             label{
+                
                 display:inline-grid;
                 input{
                     outline: none;
