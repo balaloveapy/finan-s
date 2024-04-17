@@ -98,7 +98,7 @@ width: 100%;
             border-radius: 15px;
             .biquine{
                 display: flex;
-                gap: 50px;
+                gap: 30px;
             }
             .biquine{
                 .text{
@@ -122,6 +122,6 @@ width: 100%;
                     
                 }
         }
-    }
+    
   
 `
