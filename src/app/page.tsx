@@ -1,113 +1,165 @@
-import Image from "next/image";
+'use client'
+import { Body } from "./page.styled";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Fab } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "./redux/redux";
+import { setAfazer } from "./redux/reduxtypes";
+import { green, red } from "@mui/material/colors";
+type over = {
+  data: string,
+  categoria: string,
+  titulo: string,
+  valor: number,
+}
 
 export default function Home() {
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.userData.todos);
+  var { handleSubmit, register, reset } = useForm<over>()
+  const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  const [date, setDate] = useState<Date>(new Date)
+  const [valueUp,setValueUp]= useState(0)
+  const [valueDown,setValueDown]= useState(0)
+  const [valornew, setValornew] = useState<over[]>()
+  useEffect(()=>{
+  var lucro = 0
+  var perda = 0
+  const ganho = user.map((a)=>{
+      if(a.categoria === 'Salario'){
+       lucro +=(+a.valor) 
+      }
+      else{
+        perda +=(+a.valor)
+      }
+    setValueUp(lucro)
+    setValueDown(perda)
+    console.log('oi')
+    },[user])
+  })
+  useEffect(() => {
+    var dates = (date.getFullYear()) + '-' + (1 + date.getMonth())
+    if (1 + date.getMonth() < 10) dates = (date.getFullYear()) + '-' + '0' + (1 + date.getMonth())
+    const filtrar = user.filter((a) => a.data.slice(0, 7) === dates)
+    setValornew(filtrar)
+  }, [date])
+  function enviar(a: over) {
+    const dates = new Date(a.data)
+    dispatch(setAfazer(a))
+    setDate(dates)
+
+  }
+  function menos() {
+    const data = date.getTime() - (30 * 24 * 60 * 60 * 1000);
+    setDate(new Date(data))
+  }
+  function More() {
+    const data = date.getTime() + (30 * 24 * 60 * 60 * 1000);
+    setDate(new Date(data))
+  }
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <Body>
+      <div className="tm">
+        <div className="logo">Sistema Financeiro</div>
+        <div className="mes">
+          <div className="days">
+            <Fab onClick={menos} size="small" aria-label="add">
+              <ArrowBackIcon style={{ height: '15px', width: '15px' }} />
+            </Fab>
+            {meses[date?.getMonth()] + ' ' + date.getFullYear()}
+            <Fab onClick={(More)} size="small" aria-label="add">
+              <ArrowForwardIcon style={{ height: '15px', width: '15px' }} />
+            </Fab>
+          </div>
+          <div className="receita">
+            <span>Receita</span>
+            <p>{(valueUp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }))}</p>
+          </div>
+          <div className="despesa">
+            <span>Despesa</span>
+            <p>{valueDown.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+          </div>
+          <div className="Balanço">
+            <span>Balanço</span>
+            <p style={valueUp-valueDown<0?{color:'red'}:{color:'green'}}>{(valueUp-valueDown).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+          </div>
+        </div>
+        <div className="categoria">
+          <form onSubmit={handleSubmit(enviar)}>
+            <div>
+              <label>
+                Data
+                <input type="date" {...register("data")} required />
+              </label>
+            </div>
+            <div>
+              <label>
+                Categoria
+                <input list="cars" {...register("categoria")} required />
+                <datalist id="cars" >
+                  <option value="Salario" />
+                  <option value="Alimentação" />
+                  <option value="Aluguel" />
+                </datalist>
+              </label>
+            </div>
+            <div>
+              <label>
+                Titulo
+                <input type="text" {...register('titulo')} required />
+              </label>
+            </div>
+            <div>
+              <label>
+                Valor
+                <input type="number" {...register('valor')} required />
+              </label>
+            </div>
+            <div>
+              <label className="text-white">
+                .
+                <button className="text-black">Adicionar</button>
+              </label>
+            </div>
+          </form>
+        </div>
+        <div className="info">
+          <div className="biquine">
+            <div className="text">
+              Data
+              <div>{valornew?.map((a,b) =>
+                <div className="margin" key={b}>
+                  {a.data}
+                </div>
+              )}</div>
+            </div>
+            <div>Categoria
+            {valornew?.map((a,b) =>
+                <div className="margin" style={a.categoria==='Salario'?{background:'#3529db'}:{background:'#6a1a1e'}} key={b}>
+                  {a.categoria}
+                </div>
+              )}
+            </div>
+            <div className="text">Titulo
+            {valornew?.map((a,b) =>
+                <div className="margin" key={b}>
+                  {a.titulo}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="text">Valor
+          {valornew?.map((a,b) =>
+                <div className="margin" key={b}>
+                  {(+a.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </div>
+              )}
+          </div>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </Body>
   );
 }
