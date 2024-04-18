@@ -26,6 +26,11 @@ width: 100%;
                 justify-content: center;
                 align-items: center;
             }
+            .info{
+                .biquine{
+                    gap:25px
+                }
+            }
             }
         }
         margin: 0 auto;
